@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import supabase from "./supabase-client.js";
-import Logo from "../public/Logo.png";
+import Logo from "./assets/Logo.png";
 
 function App() {
   const [codeMassar, setCodeMassar] = useState("");
