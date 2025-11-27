@@ -5,4 +5,4 @@
 # Mark these env vars as intentionally public
 [build.environment]
   VITE_SUPABASE_URL = "allow"
-  VITE_SUPABASE_KEY = "allow"
+  VITE_SUPABASE_ANON_KEY = "allow"
