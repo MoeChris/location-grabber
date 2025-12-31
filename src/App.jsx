@@ -71,14 +71,14 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 pt-10 gap-y-36">
+    <div className="flex flex-col min-h-screen bg-gray-100 pt-10 gap-y-30">
       <img src={Logo} alt="" width={150} height={150} className="mx-auto" />
 
       <form className="flex flex-col gap-4 w-96 mx-auto" onSubmit={addData}>
         <input
           type="text"
-          placeholder="Code Bus"
-          className="border border-gray-500 p-1 rounded"
+          placeholder="رقم الحافلة"
+          className="border border-gray-500 p-1 rounded text-right"
           value={codeBus}
           disabled={busIsLocked}
           onChange={(e) => setCodeBus(e.target.value)}
@@ -86,8 +86,8 @@ const App = () => {
 
         <input
           type="text"
-          placeholder="Code Massar"
-          className="border border-gray-500 p-1 rounded"
+          placeholder="الرقم المدرسي"
+          className="border border-gray-500 p-1 rounded text-right"
           value={codeMassar}
           onChange={(e) => setCodeMassar(e.target.value)}
         />
