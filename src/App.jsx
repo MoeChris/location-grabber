@@ -77,7 +77,7 @@ const App = () => {
       <form className="flex flex-col gap-4 w-96 mx-auto" onSubmit={addData}>
         <input
           type="text"
-          placeholder="رقم الحافلة"
+          placeholder="ترقيم الحافلة"
           className="border border-gray-500 p-1 rounded text-right"
           value={codeBus}
           disabled={busIsLocked}
@@ -86,7 +86,7 @@ const App = () => {
 
         <input
           type="text"
-          placeholder="الرقم المدرسي"
+          placeholder="كود مسار"
           className="border border-gray-500 p-1 rounded text-right"
           value={codeMassar}
           onChange={(e) => setCodeMassar(e.target.value)}
