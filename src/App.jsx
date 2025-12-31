@@ -7,87 +7,83 @@ const App = () => {
   const [codeMassar, setCodeMassar] = useState("");
   const [codeBus, setCodeBus] = useState("");
 
-  const [latitude, setLatitude] = useState(null);
-  const [longtitude, setLongtitude] = useState(null);
-  const [pendingSubmit, setPendingSubmit] = useState(false);
-
-  // Load Bus Code and disable the input if it exists
+  // Load Bus Code once
   useEffect(() => {
     const savedBus = localStorage.getItem("codeBus");
-    if (savedBus) {
-      setCodeBus(savedBus);
-    }
+    if (savedBus) setCodeBus(savedBus);
   }, []);
 
-  const busIsLocked = localStorage.getItem("codeBus") ? true : false;
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongtitude(position.coords.longitude);
-        },
-        (err) => {
-          console.error("Geolocation error:", err);
-          setPendingSubmit(false);
-        }
-      );
-    }
-  };
+  const busIsLocked = Boolean(localStorage.getItem("codeBus"));
 
   const addData = (e) => {
     e.preventDefault();
-    setPendingSubmit(true);
-    getLocation();
-  };
 
-  useEffect(() => {
-    const doInsert = async () => {
-      if (!pendingSubmit) return;
-      if (latitude == null || longtitude == null) return;
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported");
+      return;
+    }
 
-      const { data, error } = await supabase.from("location").insert([
-        {
-          code_massar: codeMassar,
-          latitude,
-          longtitude,
-          bus_code: codeBus,
-        },
-      ]);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longtitude = position.coords.longitude;
 
-      if (error) {
-        console.log("Error inserting data:", error);
-      } else {
-        console.log("Data inserted:", data);
+        const { error } = await supabase.from("location").insert([
+          {
+            code_massar: codeMassar,
+            latitude,
+            longtitude,
+            bus_code: codeBus,
+          },
+        ]);
 
+        if (error) {
+          console.error(error);
+          alert("Submission failed");
+          return;
+        }
+
+        // Lock bus code after first successful submit
         if (!localStorage.getItem("codeBus")) {
           localStorage.setItem("codeBus", codeBus);
         }
 
         setCodeMassar("");
+        alert("Submitted successfully");
+      },
+      (err) => {
+        console.error(err);
+
+        if (err.code === err.PERMISSION_DENIED) {
+          alert("Please allow location access");
+        } else if (err.code === err.TIMEOUT) {
+          alert("Location timeout. Try again.");
+        } else {
+          alert("Unable to get location");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 30000,
+        maximumAge: 0,
       }
-
-      setPendingSubmit(false);
-    };
-
-    doInsert();
-  }, [pendingSubmit, latitude, longtitude, codeMassar, codeBus]);
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 pt-10 gap-y-36">
       <img src={Logo} alt="" width={150} height={150} className="mx-auto" />
 
       <form className="flex flex-col gap-4 w-96 mx-auto" onSubmit={addData}>
-        
         <input
           type="text"
           placeholder="Code Bus"
           className="border border-gray-500 p-1 rounded"
           value={codeBus}
-          disabled={busIsLocked}   // lock after first submit
+          disabled={busIsLocked}
           onChange={(e) => setCodeBus(e.target.value)}
         />
+
         <input
           type="text"
           placeholder="Code Massar"
@@ -102,7 +98,6 @@ const App = () => {
         >
           Submit
         </button>
-
       </form>
     </div>
   );
