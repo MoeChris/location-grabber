@@ -30,10 +30,10 @@ const App = () => {
 
         const { error } = await supabase.from("location").insert([
           {
-            code_massar: codeMassar,
+            code_massar: codeMassar.replace(/\s+/g, ''),
             latitude,
             longtitude,
-            bus_code: codeBus,
+            bus_code: codeBus.replace(/\s+/g, ''),
           },
         ]);
 
