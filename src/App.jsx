@@ -82,6 +82,7 @@ const App = () => {
           value={codeBus}
           disabled={busIsLocked}
           onChange={(e) => setCodeBus(e.target.value)}
+          required
         />
 
         <input
@@ -90,6 +91,7 @@ const App = () => {
           className="border border-gray-500 p-1 rounded text-right"
           value={codeMassar}
           onChange={(e) => setCodeMassar(e.target.value)}
+          required
         />
 
         <button
